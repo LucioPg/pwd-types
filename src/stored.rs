@@ -4,6 +4,7 @@ use crate::{PasswordScore, SecretBox, SecretString};
 use secrecy::ExposeSecret;
 use sqlx::FromRow;
 use sqlx_template::SqlxTemplate;
+use uuid::Uuid;
 
 use crate::{DbSecretString, DbSecretVec};
 
@@ -67,8 +68,11 @@ impl StoredPassword {
 }
 
 /// Password non criptata per uso interno.
+/// Include un UUID in memoria per identificazione univoca nella UI.
 #[derive(Clone)]
 pub struct StoredRawPassword {
+    /// UUID generato in memoria (non salvato nel DB)
+    pub uuid: Uuid,
     pub id: Option<i64>,
     #[allow(unused)]
     pub user_id: i64,
@@ -82,6 +86,7 @@ pub struct StoredRawPassword {
 impl std::fmt::Debug for StoredRawPassword {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("StoredRawPassword")
+            .field("uuid", &self.uuid)
             .field("id", &self.id)
             .field("user_id", &self.user_id)
             .field("location", &"***SECRET***")
@@ -96,6 +101,7 @@ impl std::fmt::Debug for StoredRawPassword {
 impl StoredRawPassword {
     pub fn new() -> Self {
         StoredRawPassword {
+            uuid: Uuid::new_v4(),
             id: None,
             user_id: 0,
             location: SecretString::new("".into()),
@@ -128,13 +134,6 @@ impl StoredRawPassword {
 
 impl PartialEq for StoredRawPassword {
     fn eq(&self, other: &Self) -> bool {
-        match (&self.id, &other.id) {
-            (Some(id1), Some(id2)) => {
-                id1 == id2
-                    && self.location.expose_secret() == other.location.expose_secret()
-            }
-            (None, None) => true,
-            _ => false,
-        }
+        self.uuid == other.uuid
     }
 }
