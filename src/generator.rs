@@ -134,6 +134,9 @@ impl PasswordPreset {
             },
         }
     }
+    pub fn variants() -> Vec<Self> {
+        vec![Self::Medium, Self::Strong, Self::Epic, Self::God]
+    }
 }
 
 impl Display for PasswordPreset {
@@ -150,5 +153,20 @@ impl From<PasswordGeneratorConfig> for AegisPasswordConfig {
             .with_numbers(config.numbers)
             .with_uppercase(config.uppercase)
             .with_lowercase(config.lowercase)
+    }
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_variants() {
+        let variants = PasswordPreset::variants();
+        assert_eq!(variants.len(), 4);
+        for variant in variants {
+            println!("{:?}", variant.to_config(1));
+        }
     }
 }
