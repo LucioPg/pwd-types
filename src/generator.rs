@@ -41,6 +41,12 @@ impl From<String> for ExcludedSymbolSet {
     }
 }
 
+impl From<ExcludedSymbolSet> for String {
+    fn from(s: ExcludedSymbolSet) -> Self {
+        s.0.into_iter().collect()
+    }
+}
+
 impl std::ops::Deref for ExcludedSymbolSet {
     type Target = HashSet<char>;
 

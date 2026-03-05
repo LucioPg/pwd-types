@@ -1,6 +1,6 @@
 [package]
 name = "pwd-types"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2024"
 description = "Core types for password management in Rust"
 license = "MIT"
