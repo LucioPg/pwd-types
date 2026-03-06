@@ -58,7 +58,7 @@ impl fmt::Display for PasswordScore {
 /// Enum che rappresenta la forza della password.
 ///
 /// Viene salvata nel database come testo ('not evaluated','weak', ecc.)
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Hash, Eq)]
 #[cfg_attr(feature = "sqlx", derive(sqlx::Type))]
 #[cfg_attr(feature = "sqlx", sqlx(type_name = "TEXT", rename_all = "lowercase"))]
 pub enum PasswordStrength {
