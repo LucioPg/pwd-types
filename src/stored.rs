@@ -24,6 +24,9 @@ pub struct UserAuth {
 pub struct StoredPassword {
     pub id: Option<i64>,
     pub user_id: i64,
+    pub name: String,
+    pub username: DbSecretVec,
+    pub username_nonce: Vec<u8>,
     pub location: DbSecretVec,
     pub location_nonce: Vec<u8>,
     pub password: DbSecretVec,
@@ -39,6 +42,9 @@ impl StoredPassword {
     pub fn new(
         id: Option<i64>,
         user_id: i64,
+        name: String,
+        username: SecretBox<[u8]>,
+        username_nonce: Vec<u8>,
         location: SecretBox<[u8]>,
         location_nonce: Vec<u8>,
         password: SecretBox<[u8]>,
@@ -48,6 +54,7 @@ impl StoredPassword {
         created_at: Option<String>,
         password_nonce: Vec<u8>,
     ) -> Self {
+        let username: DbSecretVec = username.into();
         let location: DbSecretVec = location.into();
         let password: DbSecretVec = password.into();
         let notes: Option<DbSecretVec> = notes.map(|n| n.into());
@@ -55,6 +62,8 @@ impl StoredPassword {
         StoredPassword {
             id,
             user_id,
+            name,
+            username,
             location,
             location_nonce,
             password,
@@ -76,6 +85,8 @@ pub struct StoredRawPassword {
     pub id: Option<i64>,
     #[allow(unused)]
     pub user_id: i64,
+    pub name: String,
+    pub username: SecretString,
     pub location: SecretString,
     pub password: SecretString,
     pub notes: Option<SecretString>,
@@ -89,6 +100,8 @@ impl std::fmt::Debug for StoredRawPassword {
             .field("uuid", &self.uuid)
             .field("id", &self.id)
             .field("user_id", &self.user_id)
+            .field("name", &self.name)
+            .field("username", &"***SECRET***")
             .field("location", &"***SECRET***")
             .field("password", &"***SECRET***")
             .field("notes", &self.notes.as_ref().map(|_| "***SECRET***"))
@@ -104,6 +117,8 @@ impl StoredRawPassword {
             uuid: Uuid::new_v4(),
             id: None,
             user_id: 0,
+            name: String::new(),
+            username: SecretString::new("".into()),
             location: SecretString::new("".into()),
             password: "".to_string().into(),
             notes: None,
@@ -112,24 +127,6 @@ impl StoredRawPassword {
         }
     }
 
-    #[allow(dead_code)]
-    pub fn get_form_fields(
-        &self,
-    ) -> (
-        i64,
-        SecretString,
-        SecretString,
-        Option<SecretString>,
-        Option<PasswordScore>,
-    ) {
-        (
-            self.id.unwrap(),
-            self.location.clone(),
-            self.password.clone(),
-            self.notes.clone(),
-            self.score.clone(),
-        )
-    }
 }
 
 impl PartialEq for StoredRawPassword {
