@@ -64,6 +64,7 @@ impl StoredPassword {
             user_id,
             name,
             username,
+            username_nonce,
             location,
             location_nonce,
             password,
