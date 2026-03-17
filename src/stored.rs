@@ -27,8 +27,8 @@ pub struct StoredPassword {
     pub name: String,
     pub username: DbSecretVec,
     pub username_nonce: Vec<u8>,
-    pub location: DbSecretVec,
-    pub location_nonce: Vec<u8>,
+    pub url: DbSecretVec,
+    pub url_nonce: Vec<u8>,
     pub password: DbSecretVec,
     pub password_nonce: Vec<u8>,
     pub notes: Option<DbSecretVec>,
@@ -45,8 +45,8 @@ impl StoredPassword {
         name: String,
         username: SecretBox<[u8]>,
         username_nonce: Vec<u8>,
-        location: SecretBox<[u8]>,
-        location_nonce: Vec<u8>,
+        url: SecretBox<[u8]>,
+        url_nonce: Vec<u8>,
         password: SecretBox<[u8]>,
         notes: Option<SecretBox<[u8]>>,
         notes_nonce: Option<Vec<u8>>,
@@ -55,7 +55,7 @@ impl StoredPassword {
         password_nonce: Vec<u8>,
     ) -> Self {
         let username: DbSecretVec = username.into();
-        let location: DbSecretVec = location.into();
+        let url: DbSecretVec = url.into();
         let password: DbSecretVec = password.into();
         let notes: Option<DbSecretVec> = notes.map(|n| n.into());
 
@@ -65,8 +65,8 @@ impl StoredPassword {
             name,
             username,
             username_nonce,
-            location,
-            location_nonce,
+            url,
+            url_nonce,
             password,
             password_nonce,
             notes,
@@ -88,7 +88,7 @@ pub struct StoredRawPassword {
     pub user_id: i64,
     pub name: String,
     pub username: SecretString,
-    pub location: SecretString,
+    pub url: SecretString,
     pub password: SecretString,
     pub notes: Option<SecretString>,
     pub score: Option<PasswordScore>,
@@ -103,7 +103,7 @@ impl std::fmt::Debug for StoredRawPassword {
             .field("user_id", &self.user_id)
             .field("name", &self.name)
             .field("username", &"***SECRET***")
-            .field("location", &"***SECRET***")
+            .field("url", &"***SECRET***")
             .field("password", &"***SECRET***")
             .field("notes", &self.notes.as_ref().map(|_| "***SECRET***"))
             .field("score", &self.score)
@@ -120,7 +120,7 @@ impl StoredRawPassword {
             user_id: 0,
             name: String::new(),
             username: SecretString::new("".into()),
-            location: SecretString::new("".into()),
+            url: SecretString::new("".into()),
             password: "".to_string().into(),
             notes: None,
             score: None,
