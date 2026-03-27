@@ -1,7 +1,6 @@
 //! Tipi database per password salvate.
 
 use crate::{PasswordScore, SecretBox, SecretString};
-use secrecy::ExposeSecret;
 use sqlx::FromRow;
 use sqlx_template::SqlxTemplate;
 use uuid::Uuid;
