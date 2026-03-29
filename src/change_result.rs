@@ -1,3 +1,7 @@
+// Copyright (c) 2026 Lucio Di Capua <ldcproductions@proton.me>
+// Licensed under the Prosperity Public License 3.0.0
+// Commercial use requires a license. See LICENSE.md for details.
+
 //! Risultato del cambiamento password per callback UI.
 //!
 //! Questo tipo è usato da `PasswordHandler` per notificare il consumer
