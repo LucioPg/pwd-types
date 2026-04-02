@@ -27,6 +27,7 @@ pub struct UserAuth {
 pub struct StoredPassword {
     pub id: Option<i64>,
     pub user_id: i64,
+    pub vault_id: i64,
     pub name: String,
     pub username: DbSecretVec,
     pub username_nonce: Vec<u8>,
@@ -45,6 +46,7 @@ impl StoredPassword {
     pub fn new(
         id: Option<i64>,
         user_id: i64,
+        vault_id: i64,
         name: String,
         username: SecretBox<[u8]>,
         username_nonce: Vec<u8>,
@@ -65,6 +67,7 @@ impl StoredPassword {
         StoredPassword {
             id,
             user_id,
+            vault_id,
             name,
             username,
             username_nonce,
@@ -89,6 +92,7 @@ pub struct StoredRawPassword {
     pub id: Option<i64>,
     #[allow(unused)]
     pub user_id: i64,
+    pub vault_id: i64,
     pub name: String,
     pub username: SecretString,
     pub url: SecretString,
@@ -104,6 +108,7 @@ impl std::fmt::Debug for StoredRawPassword {
             .field("uuid", &self.uuid)
             .field("id", &self.id)
             .field("user_id", &self.user_id)
+            .field("vault_id", &self.vault_id)
             .field("name", &self.name)
             .field("username", &"***SECRET***")
             .field("url", &"***SECRET***")
@@ -121,6 +126,7 @@ impl StoredRawPassword {
             uuid: Uuid::new_v4(),
             id: None,
             user_id: 0,
+            vault_id: 0,
             name: String::new(),
             username: SecretString::new("".into()),
             url: SecretString::new("".into()),
@@ -131,6 +137,20 @@ impl StoredRawPassword {
         }
     }
 
+}
+
+/// Vault per raggruppare password.
+#[derive(FromRow, Debug, Clone, SqlxTemplate, PartialEq)]
+#[table("vaults")]
+#[db("sqlite")]
+#[tp_upsert(by = "id")]
+#[tp_select_builder]
+pub struct Vault {
+    pub id: Option<i64>,
+    pub user_id: i64,
+    pub name: String,
+    pub description: Option<String>,
+    pub created_at: Option<String>,
 }
 
 impl PartialEq for StoredRawPassword {

@@ -37,7 +37,7 @@ pub use secrets::{DbSecretString, DbSecretVec, SecretSliceU8};
 #[cfg(feature = "sqlx")]
 mod stored;
 #[cfg(feature = "sqlx")]
-pub use stored::{UserAuth, StoredPassword, StoredRawPassword};
+pub use stored::{UserAuth, StoredPassword, StoredRawPassword, Vault};
 
 // Optional: password generator config (richiede sqlx per SqlxTemplate)
 #[cfg(all(feature = "generator", feature = "sqlx"))]
